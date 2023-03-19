@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const todos = api.todo.getAllTodos.useQuery();
@@ -9,6 +10,8 @@ const Home: NextPage = () => {
   const deleteTodo = api.todo.deleteTodo.useMutation();
 
   const [content, setContent] = useState("");
+
+  const router = useRouter();
 
   function handleSubmitTodo(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,15 +43,25 @@ const Home: NextPage = () => {
         <div>
           <ul className="flex flex-col gap-4">
             {todos.data?.map((todo) => (
-              <div key={todo.id} className="flex gap-3">
+              <div
+                key={todo.id}
+                className="flex items-center justify-center gap-3"
+              >
+                <li className="text-white">{todo.content}</li>
                 <button
                   type="button"
-                  className="text-white"
+                  className="rounded-lg bg-blue-400 p-2 text-white"
+                  onClick={(): any => router.push(`/${todo.id}`)}
+                >
+                  UPDATE
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg bg-red-400 p-2 text-white"
                   onClick={() => handleDeleteTodo(todo.id)}
                 >
-                  x
+                  DELETE
                 </button>
-                <li className="text-white">{todo.content}</li>
               </div>
             ))}
           </ul>

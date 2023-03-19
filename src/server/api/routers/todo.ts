@@ -7,6 +7,16 @@ export const todoRouter = createTRPCRouter({
     return ctx.prisma.todo.findMany();
   }),
 
+  getTodo: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.todo.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
   createTodo: publicProcedure
     .input(z.object({ content: z.string() }))
     .mutation(({ ctx, input }) => {
@@ -17,9 +27,18 @@ export const todoRouter = createTRPCRouter({
       });
     }),
 
-  // updateTodo: publicProcedure.query(({ ctx }) => {
-  //   return ctx.prisma.example.findMany();
-  // }),
+  updateTodo: publicProcedure
+    .input(z.object({ id: z.string(), content: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.todo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          content: input.content,
+        },
+      });
+    }),
 
   deleteTodo: publicProcedure
     .input(z.object({ id: z.string() }))
